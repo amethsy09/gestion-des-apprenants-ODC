@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Promotion</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans overflow-hidden">
+
+  <div class="flex h-screen -mt-[12vh]">
+    <div id="sidebar"></div>
+    <!-- Main contentenu -->
+    <main class="flex-1 ">
+      <!-- Header -->
+      <div id="navbar"></div>
+
+      <div class="p-6 overflow-y-auto h-[80vh] -mt-5">
+        <div class="p-6 bg-[#F9EFEF] rounded-xl">
+          <!-- Page Titre -->
+          <div class="flex justify-between items-center mb-2">
+            <h1 class="text-2xl font-bold text-orange-500">Promotion</h1>
+            <button
+              class="bg-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-orange-600 transition">
+              <i class="ri-add-line"></i> Ajouter promotion
+            </button>
+          </div>
+          <p class="text-sm text-gray-500 mb-4">Gérer les promotions de l'école</p>
+
+          <!-- Statistique-->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-red-700 text-white p-4 rounded-lg text-center shadow">
+              <p id="Apprenant" class="text-2xl font-bold">0</p>
+              <p>Apprenant</p>
+            </div>
+            <div class="bg-red-700 text-white p-4 rounded-lg text-center shadow">
+              <p id="Référentiel" class="text-2xl font-bold">0</p>
+              <p>Référentiel</p>
+            </div>
+            <div class="bg-red-700 text-white p-4 rounded-lg text-center shadow">
+              <p id="PromoActive" class="text-2xl font-bold">0</p>
+              <p>Promotion active</p>
+            </div>
+            <div class="bg-red-700 text-white p-4 rounded-lg text-center shadow">
+              <p id="TotalPromo" class="text-2xl font-bold">0</p>
+              <p>Total promotion</p>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center mb-4">
+            <input type="text" id="searchInput" placeholder="Rechercher..."
+              class="px-4 py-2 border rounded w-1/2 focus:outline-none focus:ring-2 focus:ring-orange-400"
+              oninput="filterPromotions()">
+            <div class="flex gap-2">
+              <div>
+                <select name="statusFilter" id="statusFilter"
+                  class="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400">
+                  <option value="all">Tous</option>
+                  <option value="active">Actif</option>
+                  <option value="inactive">Inactif</option>
+                </select>
+              </div>
+              <button id="cardViewBtn" class="bg-orange-500 text-white p-2 rounded hover:bg-orange-600 transition"
+                aria-label="Vue grille">
+                Grille
+              </button>
+              <button id="tableViewBtn" class="bg-gray-200 hover:bg-gray-300 p-2 rounded transition"
+                aria-label="Vue liste">
+                Liste
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="promoContainer">
+
+          </div>
+
+          <div id="tableContainer" class="hidden bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date_debut
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date_fin
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Référentiels</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+
+              </tbody>
+            </table>
+          </div>
+
+
+          <!-- Pagination -->
+          <div class="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+            <!-- Sélection du nombre d'éléments -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600">Afficher</span>
+              <select id="itemsPerPage"
+                class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+              </select>
+              <span class="text-sm text-gray-600">éléments</span>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex items-center gap-4">
+              <button id="prevPage"
+                class="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Précédent
+              </button>
+              <div id="pageNumbers" class="flex gap-1">
+                <!-- Les numéros de page seront générés ici -->
+              </div>
+              <button id="nextPage"
+                class="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Suivant
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal d'ajout de promotion -->
+    <div id="addPromoModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+        <div class="flex justify-between items-center border-b px-6 py-4">
+          <h3 class="text-lg font-semibold text-gray-800">Ajouter une nouvelle promotion</h3>
+          <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+            <i class="ri-close-line text-xl"></i>
+          </button>
+        </div>
+
+        <div class="p-6">
+          <form id="addPromoForm">
+            <div class="mb-4">
+              <label for="promoName" class="block text-sm font-medium text-gray-700 mb-1">Nom de la promotion</label>
+              <input type="text" id="promoName" name="promoName"
+                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                <input type="date" id="startDate" name="startDate"
+                  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
+              </div>
+              <div>
+                <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                <input type="date" id="endDate" name="endDate"
+                  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400">
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="promoImage" class="block text-sm font-medium text-gray-700 mb-1">URL de l'image</label>
+              <input type="url" id="promoImage" name="promoImage"
+                class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+                placeholder="https://example.com/image.jpg">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Référentiels</label>
+              <div id="referentielsContainer" class="space-y-2">
+                <!-- Les référentiels seront ajoutés dynamiquement ici -->
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="inline-flex items-center">
+                <input type="checkbox" name="isActive"
+                  class="rounded border-gray-300 text-orange-500 focus:ring-orange-400">
+                <span class="ml-2 text-sm text-gray-700">Promotion active</span>
+              </label>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-4 border-t">
+              <button type="button" id="cancelModalBtn"
+                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                Annuler
+              </button>
+              <button type="submit" class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600">
+                Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../../js/admin/promo.js"></script>
+  <script src="../../html/composant/sidebar.js"></script>
+  <script src="../../html/composant/navbar.js"></script>
+
+</body>
+
+</html>

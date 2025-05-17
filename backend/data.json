@@ -1,0 +1,141 @@
+{
+  "utilisateurs": [
+    {
+      "id": "1",
+      "nom": "Admin",
+      "prenom": "Principal",
+      "email": "admin@odc.sn",
+      "mot_de_passe": "mdp123",
+      "role": "Admin",
+      "photo": "https://img.freepik.com/free-photo/happy-curly-haired-african-american-woman-laughs-positively-points-aside-copy-space-wears-black-t-shirt_273609-38585.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740"
+    },
+    {
+      "id": "2",
+      "nom": "Ndoye",
+      "prenom": "Fatou",
+      "email": "vigile@odc.sn",
+      "mot_de_passe": "mdp_vigile",
+      "role": "Vigile",
+      "photo": "https://img.freepik.com/free-photo/happy-curly-haired-african-american-woman-laughs-positively-points-aside-copy-space-wears-black-t-shirt_273609-38585.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740"
+    },
+    {
+      "id": "3",
+      "nom": "Sow",
+      "prenom": "Alioune",
+      "email": "apprenant1@odc.sn",
+      "mot_de_passe": "mdp_apprenant",
+      "role": "Apprenant",
+      "photo": "https://img.freepik.com/free-photo/happy-curly-haired-african-american-woman-laughs-positively-points-aside-copy-space-wears-black-t-shirt_273609-38585.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740"
+    }
+  ],
+  "promotions": [
+    {
+      "id": "1",
+      "nom": " Mars 2024",
+      "statut": "active",
+      "date_debut": "2024-03-01",
+      "date_fin": "2024-08-30",
+      "nombre_apprenants": 35,
+      "referentiels": [
+        1,
+        2
+      ],
+      "image": "https://img.freepik.com/free-psd/back-school-social-media-banner-instagram-post-template_106176-2846.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740"
+    },
+    {
+      "id": "2",
+      "nom": " Septembre 2023",
+      "statut": "inactive",
+      "date_debut": "2023-09-01",
+      "date_fin": "2024-02-28",
+      "nombre_apprenants": 28,
+      "referentiels": [
+        2,
+        3
+      ],
+      "image": "https://img.freepik.com/free-psd/back-school-social-media-banner-instagram-post-template_106176-2836.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740"
+    },
+    {
+      "id": "3",
+      "nom": " Septembre 2022",
+      "statut": "inactive",
+      "date_debut": "2023-09-01",
+      "date_fin": "2024-02-28",
+      "nombre_apprenants": 28,
+      "referentiels": [
+        1,
+        3
+      ],
+      "image": "https://img.freepik.com/free-psd/back-school-social-media-banner-instagram-post-template_106176-2846.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740"
+    },
+    {
+      "id": "4",
+      "nom": "Septembre 2025",
+      "statut": "active",
+      "date_debut": "2023-09-01",
+      "date_fin": "2024-02-28",
+      "nombre_apprenants": 28,
+      "referentiels": [
+        1,
+        3
+      ],
+      "image": "https://img.freepik.com/free-psd/back-school-social-media-banner-instagram-post-template_106176-2836.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740"
+    },
+    {
+      "id": "5",
+      "nom": "Septembre 2020",
+      "date_debut": "2020-03-01",
+      "date_fin": "2020-08-30",
+      "image": "https://img.freepik.com/free-psd/back-school-social-media-banner-instagram-post-template_106176-2836.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740",
+      "statut": "inactive",
+      "referentiels": [
+        3,
+        4
+      ],
+      "nombre_apprenants": 0
+    },
+    {
+      "id": "6",
+      "nom": "Septembre 2019",
+      "date_debut": "2019-03-01",
+      "date_fin": "2019-08-30",
+      "image": "https://img.freepik.com/free-psd/back-school-social-media-banner-instagram-post-template_106176-2836.jpg?uid=R136290033&ga=GA1.1.1421185707.1725292688&semt=ais_hybrid&w=740",
+      "statut": "inactive",
+      "referentiels": [
+        1,
+        2
+      ],
+      "nombre_apprenants": 0
+    },
+    {
+      "id": "7",
+      "nom": "Avril 2025",
+      "date_debut": "2025-05-17",
+      "date_fin": "2025-10-17",
+      "image": "https://cdn-front.freepik.com/images/ai/image-generator/gallery/resource-tti-15.webp",
+      "statut": "inactive",
+      "referentiels": [
+        4
+      ],
+      "nombre_apprenants": 0
+    }
+  ],
+  "referentiels": [
+    {
+      "id": "1",
+      "nom": "Dév/Web"
+    },
+    {
+      "id": "2",
+      "nom": "Data Analyse"
+    },
+    {
+      "id": "3",
+      "nom": "Marketing"
+    },
+    {
+      "id": "4",
+      "nom": "Finance"
+    }
+  ]
+}

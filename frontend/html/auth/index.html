@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Ecole 221</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen flex items-center justify-center p-4 font-sans overflow-hidden " style="background-image:url(../image/WhatsApp\ Image\ 2025-05-16\ à\ 15.14.44_29033665.jpg); background-size: cover;
+background-position: center;
+background-repeat: no-repeat;">
+
+  <!-- Contenu principal centré -->
+  <main class="flex-grow flex items-center justify-center p-4 -mt-16">
+    <!-- Carte de connexion -->
+    <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md z-10 border border-gray-100">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-gray-800 text-lg font-semibold">
+          Bienvenue sur <span class="text-red-700 font-bold">ECOLE 221</span><br/>
+          <span class="text-2xl font-bold">Se connecter</span>
+        </h2>
+        <img src="../image/logo.png" alt="Logo" class="w-12 h-12" />
+      </div>
+
+      <button class="w-full flex items-center justify-center gap-2 bg-blue-50 text-blue-700 font-medium py-2.5 rounded-lg mb-6 hover:bg-blue-100 transition border border-blue-100">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google" class="w-5 h-5" />
+        Se connecter avec Google
+      </button>
+
+      <div class="relative flex items-center mb-6">
+        <div class="flex-grow border-t border-gray-300"></div>
+        <span class="mx-4 text-gray-500 text-sm">OU</span>
+        <div class="flex-grow border-t border-gray-300"></div>
+      </div>
+
+      <form id="form">
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 text-sm font-medium mb-1">Téléphone ou email</label>
+          <input id="email" type="text" placeholder="Entrez votre identifiant" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-700 focus:border-transparent">
+          <p id="email-error" class="text-red-500 text-sm mt-2 hidden text-center"></p>
+        </div>
+
+        <div class="mb-6">
+          <label for="password" class="block text-gray-700 text-sm font-medium mb-1">Mot de passe</label>
+          <input id="password" type="password" placeholder="Entrez votre mot de passe" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-red-700 focus:border-transparent">
+          <p id="password-error" class="text-red-500 text-sm mt-2 hidden text-center"></p>
+          <a href="/frontend/pages/initmot_de_passe.html" class="text-sm text-blue-500 hover:underline mt-2 block text-right">Mot de passe oublié ?</a>
+        </div>
+
+        <div class="flex items-center mb-4">
+          <label class="flex items-center text-sm text-gray-600">
+            <input type="checkbox" class="mr-2"> Se souvenir de moi
+          </label>
+        </div>
+
+        <button id="btn-login" class="bg-red-700 text-white w-full py-3 rounded-lg hover:bg-red-800 transition font-medium shadow-md">Se connecter</button>
+      </form>
+
+      <p class="text-center text-sm text-gray-600 mt-4">Pas encore de compte ? <a href="#" class="text-blue-500 hover:underline">S'inscrire</a></p>
+      <p id="login-error" class="text-red-500 text-sm mt-2 hidden text-center"></p>
+    </div>
+  </main>
+
+  <script src="../../js/connnexion/login.js"></script>
+</body>
+</html>
