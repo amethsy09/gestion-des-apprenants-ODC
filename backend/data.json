@@ -106,18 +106,6 @@
         2
       ],
       "nombre_apprenants": 0
-    },
-    {
-      "id": "7",
-      "nom": "Avril 2025",
-      "date_debut": "2025-05-17",
-      "date_fin": "2025-10-17",
-      "image": "https://cdn-front.freepik.com/images/ai/image-generator/gallery/resource-tti-15.webp",
-      "statut": "inactive",
-      "referentiels": [
-        4
-      ],
-      "nombre_apprenants": 0
     }
   ],
   "referentiels": [

@@ -56,150 +56,207 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-async function loadData() {
+  async function loadData() {
     try {
-        // Utilisez directement l'API json-server
-        const [promotionsRes, utilisateursRes, referentielsRes] = await Promise.all([
-            fetch('http://localhost:3000/promotions'),
-            fetch('http://localhost:3000/utilisateurs'),
-            fetch('http://localhost:3000/referentiels')
-        ]);
-        
-        if (!promotionsRes.ok || !utilisateursRes.ok || !referentielsRes.ok) {
-            throw new Error('Erreur de chargement des données');
-        }
-        
-        return {
-            promotions: await promotionsRes.json(),
-            utilisateurs: await utilisateursRes.json(),
-            referentiels: await referentielsRes.json()
-        };
+      const [promotionsRes, utilisateursRes, referentielsRes] = await Promise.all([
+        fetch('http://localhost:3000/promotions'),
+        fetch('http://localhost:3000/utilisateurs'),
+        fetch('http://localhost:3000/referentiels')
+      ]);
+      
+      if (!promotionsRes.ok || !utilisateursRes.ok || !referentielsRes.ok) {
+        throw new Error('Erreur de chargement des données');
+      }
+      
+      return {
+        promotions: await promotionsRes.json(),
+        utilisateurs: await utilisateursRes.json(),
+        referentiels: await referentielsRes.json()
+      };
     } catch (error) {
-        console.error('Erreur:', error);
-        return null;
+      console.error('Erreur:', error);
+      return null;
     }
-}
+  }
 
-// Fonction corrigée pour afficher les stats
-async function displayStats() {
+  async function displayStats() {
     const data = await loadData();
     if (data) {
-        // Calculer les statistiques
-        const apprenants = data.utilisateurs.filter(u => u.role === "Apprenant").length;
-        const referentiels = data.referentiels.length;
-        const promoActive = data.promotions.filter(p => p.statut === "active").length;
-        const totalPromo = data.promotions.length;
+      const apprenants = data.utilisateurs.filter(u => u.role === "Apprenant").length;
+      const referentiels = data.referentiels.length;
+      const promoActive = data.promotions.filter(p => p.statut === "active").length;
+      const totalPromo = data.promotions.length;
 
-        // Afficher les statistiques
-        document.getElementById('Apprenant').textContent = apprenants.toLocaleString();
-        document.getElementById('Référentiel').textContent = referentiels.toLocaleString();
-        document.getElementById('PromoActive').textContent = promoActive.toLocaleString();
-        document.getElementById('TotalPromo').textContent = totalPromo.toLocaleString();
+      document.getElementById('Apprenant').textContent = apprenants.toLocaleString();
+      document.getElementById('Référentiel').textContent = referentiels.toLocaleString();
+      document.getElementById('PromoActive').textContent = promoActive.toLocaleString();
+      document.getElementById('TotalPromo').textContent = totalPromo.toLocaleString();
     }
-}
-
+  }
 
   // Fonctions pour le modal
   function openAddPromoModal() {
     addPromoModal.classList.remove("hidden");
+    document.querySelector("#addPromoModal h3").textContent = 
+      addPromoForm.dataset.editingId ? "Modifier la promotion" : "Ajouter une nouvelle promotion";
     loadReferentielsForModal();
   }
 
   function closeAddPromoModal() {
     addPromoModal.classList.add("hidden");
     addPromoForm.reset();
+    delete addPromoForm.dataset.editingId;
+    document.querySelector("#addPromoModal h3").textContent = "Ajouter une nouvelle promotion";
     clearValidationErrors();
   }
 
-async function getNextId(endpoint) {
-  const response = await fetch(`http://localhost:3000/${endpoint}`);
-  const data = await response.json();
-  
-  if (!data.length) return "1"; // Si aucune donnée, commencer à 1
-  
-  const maxId = Math.max(...data.map(item => 
-    typeof item.id === 'string' ? parseInt(item.id) : item.id
-  ));
-  
-  return (maxId + 1).toString();
-}
-
-  // Gestion du formulaire avec validation
- async function handleFormSubmit(e) {
-  e.preventDefault();
-  clearValidationErrors();
-
-  // Validation des champs (inchangée)
-  const promoName = document.getElementById("promoName");
-  const startDate = document.getElementById("startDate");
-  const endDate = document.getElementById("endDate");
-  const checkboxes = document.querySelectorAll('input[name="referentiels"]:checked');
-
-  let isValid = true;
-
-  if (!promoName.value.trim()) {
-    showValidationError(promoName, "Le nom de la promotion est requis");
-    isValid = false;
+  function resetAddPromoForm() {
+    addPromoForm.reset();
+    delete addPromoForm.dataset.editingId;
+    document.querySelector("#addPromoModal h3").textContent = "Ajouter une nouvelle promotion";
+    clearValidationErrors();
   }
 
-  if (!startDate.value) {
-    showValidationError(startDate, "La date de début est requise");
-    isValid = false;
-  }
-
-  if (!endDate.value) {
-    showValidationError(endDate, "La date de fin est requise");
-    isValid = false;
-  } else if (startDate.value && new Date(endDate.value) < new Date(startDate.value)) {
-    showValidationError(endDate, "La date de fin doit être après la date de début");
-    isValid = false;
-  }
-
-  if (checkboxes.length === 0) {
-    const errorElement = document.getElementById("referentielsError");
-    errorElement.textContent = "Sélectionnez au moins un référentiel";
-    errorElement.classList.remove("hidden");
-    isValid = false;
-  }
-
-  if (!isValid) return;
-
-  try {
-    // Récupérer le nouvel ID
-    const newId = await getNextId('promotions', 'id');
+  async function getNextId(endpoint) {
+    const response = await fetch(`http://localhost:3000/${endpoint}`);
+    const data = await response.json();
     
-    // Préparer les données
-    const formData = {
-      id: newId,
-      nom: promoName.value.trim(),
-      date_debut: startDate.value,
-      date_fin: endDate.value,
-      image: document.getElementById("promoImage").value || "https://via.placeholder.com/150",
-      statut: document.querySelector("input[name='isActive']").checked ? "active" : "inactive",
-      referentiels: Array.from(checkboxes).map(checkbox => parseInt(checkbox.value)),
-      nombre_apprenants: 0
-    };
-
-    // Envoyer les données
-    const response = await fetch("http://localhost:3000/promotions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
-    });
-
-    if (!response.ok) throw new Error("Erreur lors de l'ajout");
-
-    const newPromotion = await response.json();
-    console.log("Nouvelle promotion créée avec ID:", newPromotion.id);
-    closeAddPromoModal();
-    loadPromotions();
-    showAlert("Promotion ajoutée avec succès!", "success");
-  } catch (error) {
-    console.error("Erreur:", error);
-    showAlert("Erreur lors de l'ajout de la promotion", "error");
+    if (!data.length) return "1";
+    
+    const maxId = Math.max(...data.map(item => 
+      typeof item.id === 'string' ? parseInt(item.id) : item.id
+    ));
+    
+    return (maxId + 1).toString();
   }
-}
-  // Affichage des référentiels sous forme de checkboxes
+
+  async function handleEditPromotion(promoId) {
+    try {
+      const response = await fetch(`http://localhost:3000/promotions/${promoId}`);
+      const promotion = await response.json();
+      
+      if (!response.ok) throw new Error("Promotion non trouvée");
+
+      document.getElementById("promoName").value = promotion.nom;
+      document.getElementById("startDate").value = promotion.date_debut;
+      document.getElementById("endDate").value = promotion.date_fin;
+      document.getElementById("promoImage").value = promotion.image;
+      document.querySelector("input[name='isActive']").checked = promotion.statut === "active";
+
+      const checkboxes = document.querySelectorAll('input[name="referentiels"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = promotion.referentiels.includes(parseInt(checkbox.value));
+      });
+
+      document.querySelector("#addPromoModal h3").textContent = "Modifier la promotion";
+      addPromoForm.dataset.editingId = promoId;
+
+      openAddPromoModal();
+    } catch (error) {
+      console.error("Erreur:", error);
+      showAlert("Erreur lors du chargement de la promotion", "error");
+    }
+  }
+
+  async function handleDeletePromotion(promoId) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette promotion ?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:3000/promotions/${promoId}`, {
+        method: "DELETE"
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la suppression");
+
+      showAlert("Promotion supprimée avec succès!", "success");
+      loadPromotions();
+      displayStats();
+    } catch (error) {
+      console.error("Erreur:", error);
+      showAlert("Erreur lors de la suppression de la promotion", "error");
+    }
+  }
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    clearValidationErrors();
+
+    const promoName = document.getElementById("promoName");
+    const startDate = document.getElementById("startDate");
+    const endDate = document.getElementById("endDate");
+    const checkboxes = document.querySelectorAll('input[name="referentiels"]:checked');
+
+    let isValid = true;
+
+    if (!promoName.value.trim()) {
+      showValidationError(promoName, "Le nom de la promotion est requis");
+      isValid = false;
+    }
+
+    if (!startDate.value) {
+      showValidationError(startDate, "La date de début est requise");
+      isValid = false;
+    }
+
+    if (!endDate.value) {
+      showValidationError(endDate, "La date de fin est requise");
+      isValid = false;
+    } else if (startDate.value && new Date(endDate.value) < new Date(startDate.value)) {
+      showValidationError(endDate, "La date de fin doit être après la date de début");
+      isValid = false;
+    }
+
+    if (checkboxes.length === 0) {
+      const errorElement = document.getElementById("referentielsError");
+      errorElement.textContent = "Sélectionnez au moins un référentiel";
+      errorElement.classList.remove("hidden");
+      isValid = false;
+    }
+
+    if (!isValid) return;
+
+    try {
+      const formData = {
+        nom: promoName.value.trim(),
+        date_debut: startDate.value,
+        date_fin: endDate.value,
+        image: document.getElementById("promoImage").value || "https://via.placeholder.com/150",
+        statut: document.querySelector("input[name='isActive']").checked ? "active" : "inactive",
+        referentiels: Array.from(checkboxes).map(checkbox => parseInt(checkbox.value)),
+        nombre_apprenants: 0
+      };
+
+      const isEditing = addPromoForm.dataset.editingId;
+      let method = 'POST';
+      let url = 'http://localhost:3000/promotions';
+
+      if (isEditing) {
+        method = 'PUT';
+        url = `http://localhost:3000/promotions/${addPromoForm.dataset.editingId}`;
+        formData.id = parseInt(addPromoForm.dataset.editingId);
+      } else {
+        const newId = await getNextId('promotions');
+        formData.id = newId;
+      }
+
+      const response = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de l'enregistrement");
+
+      closeAddPromoModal();
+      loadPromotions();
+      displayStats();
+      showAlert(`Promotion ${isEditing ? 'modifiée' : 'ajoutée'} avec succès!`, "success");
+    } catch (error) {
+      console.error("Erreur:", error);
+      showAlert(`Erreur lors de ${addPromoForm.dataset.editingId ? 'la modification' : 'l\'ajout'} de la promotion`, "error");
+    }
+  }
+
   function loadReferentielsForModal() {
     referentielsContainer.innerHTML = `
       <div id="referentielsCheckboxes" class="space-y-2 mt-2"></div>
@@ -247,7 +304,6 @@ async function getNextId(endpoint) {
     });
   }
 
-  // Fonctions de validation
   function showValidationError(inputElement, message) {
     const errorElement = document.createElement("div");
     errorElement.className = "mt-1 text-sm text-red-600";
@@ -297,7 +353,6 @@ async function getNextId(endpoint) {
     }
   }
 
-  // Chargement des promotions
   function loadPromotions() {
     cardContainer.innerHTML = "";
     tableBody.innerHTML = "";
@@ -318,7 +373,6 @@ async function getNextId(endpoint) {
       });
   }
 
-  // Fonctions de pagination et filtrage
   function applyFiltersAndPagination() {
     const filtered = filterPromotionsData();
     totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
@@ -404,7 +458,6 @@ async function getNextId(endpoint) {
     return button;
   }
 
-  // Fonctions d'affichage
   function createReferentielsMap(referentiels) {
     const map = {};
     referentiels.forEach(ref => map[ref.id] = ref.nom);
@@ -458,10 +511,10 @@ async function getNextId(endpoint) {
               </span>
             </div>
             <div class="flex justify-end">
-              <button class="text-orange-500 hover:text-orange-700 p-1 rounded-full hover:bg-orange-50 transition-colors">
+              <button class="edit-btn text-orange-500 hover:text-orange-700 p-1 rounded-full hover:bg-orange-50 transition-colors">
                 <i class="ri-edit-line text-lg"></i>
               </button>
-              <button class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors">
+              <button class="delete-btn text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors">
                 <i class="ri-delete-bin-line text-lg"></i>
               </button>
             </div>
@@ -469,6 +522,10 @@ async function getNextId(endpoint) {
         </div>
       </div>
     `;
+    
+    card.querySelector('.edit-btn').addEventListener('click', () => handleEditPromotion(promo.id));
+    card.querySelector('.delete-btn').addEventListener('click', () => handleDeletePromotion(promo.id));
+    
     return card;
   }
 
@@ -503,19 +560,22 @@ async function getNextId(endpoint) {
       </td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         <div class="flex gap-2">
-          <button class="text-orange-500 hover:text-orange-700">
+          <button class="edit-btn text-orange-500 hover:text-orange-700">
             <i class="ri-edit-line"></i>
           </button>
-          <button class="text-red-500 hover:text-red-700">
+          <button class="delete-btn text-red-500 hover:text-red-700">
             <i class="ri-delete-bin-line"></i>
           </button>
         </div>
       </td>
     `;
+    
+    row.querySelector('.edit-btn').addEventListener('click', () => handleEditPromotion(promo.id));
+    row.querySelector('.delete-btn').addEventListener('click', () => handleDeletePromotion(promo.id));
+    
     return row;
   }
 
-  // Fonctions utilitaires
   function getReferentielsList(promo, referentielsMap) {
     return promo.referentiels.map(id => referentielsMap[id]).join(", ");
   }
@@ -559,11 +619,12 @@ async function getNextId(endpoint) {
     setTimeout(() => {
       alert.classList.add("opacity-0", "transition-opacity", "duration-500");
       setTimeout(() => alert.remove(), 500);
-    }, 3000);
+    }, 8000);
   }
 
   // Initialisation
-   displayStats();
+  displayStats();
   switchView("cards");
   loadPromotions();
+  resetAddPromoForm();
 });
